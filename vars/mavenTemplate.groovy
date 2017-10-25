@@ -118,7 +118,7 @@ def call(Map parameters = [:], body) {
                             [name: 'maven', image: "${mavenImage}", command: '/bin/sh -c', args: 'cat', ttyEnabled: true, privileged: true,
                              envVars: [
                                      [key: 'MAVEN_OPTS', value: '-Duser.home=/root/ -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'],
-                                     [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/']]],
+                                     [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/']]]],
                     volumes: [secretVolume(secretName: 'jenkins-maven-settings', mountPath: '/root/.m2'),
                               persistentVolumeClaim(claimName: 'jenkins-mvn-local-repo', mountPath: '/root/.mvnrepository'),
                               secretVolume(secretName: 'jenkins-docker-cfg', mountPath: '/home/jenkins/.docker'),
