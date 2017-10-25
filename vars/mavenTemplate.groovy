@@ -35,7 +35,7 @@ def call(Map parameters = [:], body) {
                         [name: 'maven', image: "${mavenImage}", command: 'cat', ttyEnabled: true,privileged:true
                          envVars: [
                                  [key: 'MAVEN_OPTS', value: '-Duser.home=/root/'],
-                                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/']]],
+                                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/']]]],
                         [name: 'clients', image: "${clientsImage}", command: 'cat', ttyEnabled: true, privileged: true]],
                 volumes: [secretVolume(secretName: 'jenkins-maven-settings', mountPath: '/root/.m2'),
                           persistentVolumeClaim(claimName: 'jenkins-mvn-local-repo', mountPath: '/root/.mvnrepo'),
