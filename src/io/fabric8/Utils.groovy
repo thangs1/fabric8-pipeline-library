@@ -192,13 +192,13 @@ String getUsersPipelineConfig(k) {
     KubernetesClient client = new DefaultKubernetesClient()
     def ns = getUsersNamespace()
     def r = client.configMaps().inNamespace(ns).withName('fabric8-pipelines').get()
-    if (!r){
-      error "no fabric8-pipelines configmap found in namespace ${ns}"
-    }
-    def d = r.getData()
-    echo "looking for key ${k} in ${ns}/fabric8-pipelines configmap"
-    def v = d[k]
-    return v
+   // if (!r){
+     // error "no fabric8-pipelines configmap found in namespace ${ns}"
+   // }
+    //def d = r.getData()
+    //echo "looking for key ${k} in ${ns}/fabric8-pipelines configmap"
+    //def v = d[k]
+    return null
 }
 
 // returns a map of the configmap data in a given namepspace
