@@ -931,8 +931,7 @@ def isOpenShift() {
 
 @NonCPS
 def getCloudConfig() {
-    def openshiftCloudConfig = Jenkins.getInstance().getCloud('openshift')
-    return (openshiftCloudConfig) ? 'openshift' : 'kubernetes'
+    return 'kubernetes'
 }
 
 /**
