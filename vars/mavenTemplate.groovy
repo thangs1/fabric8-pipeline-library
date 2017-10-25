@@ -10,7 +10,7 @@ def call(Map parameters = [:], body) {
     def label = parameters.get('label', defaultLabel)
 
     def mavenImage = parameters.get('mavenImage', 'fabric8/maven-builder:v7973e33')
-    def jnlpImage = (flow.isOpenShift()) ? 'fabric8/jenkins-slave-base-centos7:0.0.1' : 'jenkinsci/jnlp-slave:2.62'
+    def jnlpImage = 'jenkinsci/jnlp-slave:2.62'
     def inheritFrom = parameters.get('inheritFrom', 'base')
 
     def cloud = flow.getCloudConfig()
@@ -86,30 +86,7 @@ def call(Map parameters = [:], body) {
                     }
         }
     } else {
-        if (utils.isUseOpenShiftS2IForBuilds()) {
-            podTemplate(cloud: cloud, label: label, inheritFrom: "${inheritFrom}", serviceAccount: 'jenkins', restartPolicy: 'OnFailure',
-                    containers: [
-                            [name: 'jnlp', image: "${jnlpImage}", args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins/',
-                             resourceLimitMemory: '512Mi'], // needs to be high to work on OSO
-                            [name: 'maven', image: "${mavenImage}", command: '/bin/sh -c', args: 'cat', ttyEnabled: true, workingDir: '/home/jenkins/',
-                             envVars: [
-                                     [key: '_JAVA_OPTIONS', value: '-Duser.home=/root/ -XX:+UseParallelGC -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Xmx256m'],
-                                     [key: 'MAVEN_OPTS', value: '-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn']
-                                     ],
-                             resourceLimitMemory: '1024Mi']],
-                    volumes: [secretVolume(secretName: 'jenkins-maven-settings', mountPath: '/root/.m2'),
-                              persistentVolumeClaim(claimName: 'jenkins-mvn-local-repo', mountPath: '/root/.mvnrepository'),
-                              secretVolume(secretName: 'jenkins-release-gpg', mountPath: '/home/jenkins/.gnupg'),
-                              secretVolume(secretName: 'jenkins-hub-api-token', mountPath: '/home/jenkins/.apitoken'),
-                              secretVolume(secretName: 'jenkins-ssh-config', mountPath: '/root/.ssh'),
-                              secretVolume(secretName: 'jenkins-git-ssh', mountPath: '/root/.ssh-git')],
-                    envVars: [[key: 'GIT_COMMITTER_EMAIL', value: 'fabric8@googlegroups.com'], [key: 'GIT_COMMITTER_NAME', value: 'fabric8']]) {
-
-                body(
-
-                )
-            }
-        } else {
+         
             echo "building using the docker socket"
 
             podTemplate(cloud: cloud, label: label, inheritFrom: "${inheritFrom}",
@@ -134,6 +111,6 @@ def call(Map parameters = [:], body) {
 
                 )
             }
-        }
+        
     }
 }
